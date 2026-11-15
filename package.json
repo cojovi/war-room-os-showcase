@@ -1,0 +1,19 @@
+{
+  "name": "war-room-os-showcase",
+  "private": true,
+  "version": "0.1.0",
+  "description": "War Room OS: a reproducible agent-orchestration showcase with fictional fixtures.",
+  "scripts": {
+    "dev:api": "pnpm --filter @agos/api dev",
+    "dev:dashboard": "pnpm --filter @agos/dashboard exec next dev --hostname 127.0.0.1 --port 3107",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "demo": "uv run --project services/agentd python scripts/prove.py --serve",
+    "test:integration": "uv run --project services/agentd python scripts/prove.py",
+    "test:unit": "uv run --project services/agentd python -m unittest discover -s tests -v"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@11.7.0"
+}

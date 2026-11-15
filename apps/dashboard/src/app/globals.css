@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* War Room OS — "Futuristic Elegance" × "Volcanic Intensity"
+   Midnight indigo + rich black base, cosmic violet surfaces,
+   solar-flare orange for live/critical, horizon blue for info. */
+@theme {
+  --color-void: #06090f;          /* app background — rich black w/ indigo cast */
+  --color-ink: #0d1b2a;           /* midnight indigo — panels */
+  --color-ink-2: #101f31;         /* elevated panel */
+  --color-onyx: #1a1a1d;          /* onyx charcoal — wells, code */
+  --color-violet: #4b2e83;        /* cosmic violet — brand surface */
+  --color-violet-2: #7c5cd6;      /* lifted violet — interactive */
+  --color-flare: #ff7a00;         /* solar flare — live accents, primary actions */
+  --color-lava: #ff4d00;          /* lava — critical, kill switch */
+  --color-horizon: #8fa7ff;       /* horizon blue — info, links */
+  --color-porcelain: #f6f2e8;     /* primary text */
+  --color-mist: #c5c0c9;          /* lavender mist — secondary text */
+  --color-dim: #6d7689;           /* muted text */
+  --color-edge: rgba(143, 167, 255, 0.14);   /* borders */
+  --color-edge-2: rgba(143, 167, 255, 0.28); /* hover borders */
+  --color-ok: #57d9a3;            /* success */
+
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+}
+
+html {
+  background: var(--color-void);
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(75, 46, 131, 0.28), transparent 60%),
+    radial-gradient(900px 420px at -10% 110%, rgba(255, 77, 0, 0.07), transparent 55%),
+    var(--color-void);
+  color: var(--color-porcelain);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+/* faint tactical grid over the canvas */
+.grid-overlay {
+  background-image:
+    linear-gradient(rgba(143, 167, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(143, 167, 255, 0.035) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(16, 31, 49, 0.92), rgba(13, 27, 42, 0.88));
+  border: 1px solid var(--color-edge);
+  border-radius: 10px;
+}
+
+.panel-glow {
+  box-shadow: 0 0 0 1px rgba(124, 92, 214, 0.12), 0 8px 40px rgba(0, 0, 0, 0.45);
+}
+
+.text-glow-flare { text-shadow: 0 0 18px rgba(255, 122, 0, 0.55); }
+
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+::selection { background: rgba(255, 122, 0, 0.35); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(143, 167, 255, 0.15); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(143, 167, 255, 0.3); }
+
+.md-body :is(h1, h2, h3) { font-weight: 600; margin: 0.75em 0 0.35em; color: var(--color-porcelain); }
+.md-body h1 { font-size: 1.15rem; } .md-body h2 { font-size: 1.05rem; } .md-body h3 { font-size: 1rem; }
+.md-body p { margin: 0.5em 0; line-height: 1.55; }
+.md-body ul, .md-body ol { margin: 0.5em 0 0.5em 1.25em; }
+.md-body ul { list-style: disc; } .md-body ol { list-style: decimal; }
+.md-body li { margin: 0.2em 0; }
+.md-body code {
+  font-family: var(--font-mono); font-size: 0.85em;
+  background: var(--color-onyx); border: 1px solid var(--color-edge);
+  padding: 0.1em 0.35em; border-radius: 4px; color: var(--color-horizon);
+}
+.md-body pre { background: var(--color-onyx); border: 1px solid var(--color-edge); border-radius: 8px; padding: 0.75rem; overflow-x: auto; margin: 0.6em 0; }
+.md-body pre code { background: none; border: none; padding: 0; }
+.md-body a { color: var(--color-horizon); text-decoration: underline; text-underline-offset: 3px; }
+.md-body blockquote { border-left: 2px solid var(--color-violet-2); padding-left: 0.75rem; color: var(--color-mist); margin: 0.5em 0; }

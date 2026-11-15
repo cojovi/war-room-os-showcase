@@ -1,0 +1,39 @@
+name: Verify showcase
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: showcase
+          POSTGRES_PASSWORD: showcase
+          POSTGRES_DB: postgres
+        ports: [55439:5432]
+        options: >-
+          --health-cmd "pg_isready -U showcase -d postgres"
+          --health-interval 2s --health-timeout 2s --health-retries 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          python-version: '3.13'
+      - run: pnpm install --frozen-lockfile
+      - run: uv sync --frozen --project services/agentd
+      - run: pnpm test:unit
+      - run: pnpm test:integration
+      - run: pnpm typecheck
+      - run: pnpm build

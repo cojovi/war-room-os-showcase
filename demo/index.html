@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>War Room OS — recorded workflow replay</title>
+  <meta name="description" content="Inspect six verified agent-workflow scenarios from a real local integration run. Fictional data, deterministic model output, no live agents.">
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#trace">Skip to the workflow</a>
+  <header class="masthead">
+    <a class="brand" href="https://github.com/cojovi/war-room-os-showcase">◈ WAR ROOM <span>OS</span></a>
+    <span class="mode"><i></i> RECORDED RUN / NO LIVE AGENTS</span>
+    <a class="source" href="https://github.com/cojovi/war-room-os-showcase">Inspect the source ↗</a>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">COJOVI / AGENT SYSTEMS / INTERACTIVE CASE STUDY</p><h1>Every run<br>leaves a <em>trail.</em></h1></div>
+      <div class="intro-note"><p>An agent can report success.<br>The workflow still has rules.</p><p class="subtle">Explore recorded outcomes from the actual PostgreSQL, API, and Python worker. Model output is deterministic; all task data is fictional.</p><div class="metrics"><div><strong id="passed">—</strong><span>CHECKS PASSED</span></div><div><strong id="model-calls">—</strong><span>LIVE MODEL CALLS</span></div></div></div>
+    </section>
+
+    <section class="workspace" id="trace" aria-label="Recorded workflow explorer">
+      <aside><p class="eyebrow">SCENARIO INDEX</p><div id="scenarios" class="scenario-list"></div><p class="sidebar-note">Replay controls navigate saved results. They do not execute tasks or contact model providers.</p></aside>
+      <article class="trace-panel">
+        <div class="trace-top"><span class="eyebrow" id="case-number">LOADING RECORD</span><span class="verified" id="outcome">LOCAL INTEGRATION RUN</span></div>
+        <h2 id="scenario-title">Loading the verification report…</h2>
+        <p id="narrative" class="narrative"></p>
+        <div id="steps" class="steps" aria-label="Workflow stages"></div>
+        <div class="controls"><button id="replay" class="primary" disabled>▶ Replay trace</button><button id="previous" disabled>← Previous</button><button id="next" disabled>Next step →</button><span id="position" aria-live="polite"></span></div>
+        <div class="record"><div><span class="eyebrow">OBSERVED RESULT</span><p id="observed">Waiting for data.</p></div><div class="record-glyph" aria-hidden="true">◈</div></div>
+        <div class="implementation"><span class="eyebrow">FOLLOW THE IMPLEMENTATION</span><a id="implementation" href="../scripts/prove.py">Open the verification runner ↗</a></div>
+      </article>
+    </section>
+
+    <section class="evidence-strip"><div><span class="eyebrow">REAL EXECUTION BOUNDARIES</span><h2>One task. Several systems.</h2></div><p><b>Next.js</b> makes the work visible.<br><b>Hono + PostgreSQL</b> own transitions and records.<br><b>Python</b> claims work, checks budgets, and submits artifacts.</p><a href="https://github.com/cojovi/war-room-os-showcase/blob/main/docs/ENGINEERING.md">Read the decisions ↗</a></section>
+
+    <details class="checks"><summary>Inspect every recorded assertion <span id="check-count"></span></summary><ul id="checks"></ul></details>
+    <footer><span id="recorded-at">Report loading</span><a href="report.json">Raw verification record ↗</a><span>DESIGNED & BUILT BY COJOVI</span></footer>
+  </main>
+  <script src="replay.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,571 @@
+{
+  "generated_at": "2026-11-15T00:10:00.124611+00:00",
+  "database_version": "14.23 (Homebrew)",
+  "mode": "Recorded integration run / deterministic model / fictional data",
+  "live_model_calls": 0,
+  "checks": [
+    {
+      "name": "All showcase migrations and fictional seed apply",
+      "passed": true
+    },
+    {
+      "name": "Worker claims the task created through the API",
+      "passed": true
+    },
+    {
+      "name": "Evidence-backed run finishes done",
+      "passed": true
+    },
+    {
+      "name": "Evidence is persisted with the task",
+      "passed": true
+    },
+    {
+      "name": "Missing evidence routes a claimed success to review",
+      "passed": true
+    },
+    {
+      "name": "Stale worker causes one abandoned run",
+      "passed": true
+    },
+    {
+      "name": "Recovery requeues once and increments the retry count",
+      "passed": true
+    },
+    {
+      "name": "A second recovery pass has no additional effect",
+      "passed": true
+    },
+    {
+      "name": "Recovered task begins attempt two",
+      "passed": true
+    },
+    {
+      "name": "Recovered task completes with evidence",
+      "passed": true
+    },
+    {
+      "name": "Exhausted budget prevents the model engine from being called",
+      "passed": true
+    },
+    {
+      "name": "Budget stop records a failed attempt and requeues",
+      "passed": true
+    },
+    {
+      "name": "Global pause prevents a new claim",
+      "passed": true
+    },
+    {
+      "name": "Eight concurrent requests receive successful responses",
+      "passed": true
+    },
+    {
+      "name": "Concurrent retries produce exactly one comment row",
+      "passed": true
+    },
+    {
+      "name": "Concurrent retries replay the same response",
+      "passed": true
+    },
+    {
+      "name": "Reusing the key with a different body is rejected",
+      "passed": true
+    },
+    {
+      "name": "Invalid mutation is rejected",
+      "passed": true
+    },
+    {
+      "name": "Failed mutation leaves no replay response behind",
+      "passed": true
+    },
+    {
+      "name": "A rolled-back request key can be retried successfully",
+      "passed": true
+    },
+    {
+      "name": "Two competing sessions claim the pending task once",
+      "passed": true
+    },
+    {
+      "name": "Claim transaction creates one run for that task",
+      "passed": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "completion",
+      "title": "Completion is earned",
+      "task_id": "3cd7da1d-569d-452d-9760-1643b22b6dcc",
+      "outcome": {
+        "status": "done",
+        "retry_count": 0
+      },
+      "narrative": "The real worker attached a file and reported the criterion. The API and database accepted the completion.",
+      "steps": [
+        "pending",
+        "claimed",
+        "in_progress",
+        "evidence attached",
+        "done"
+      ]
+    },
+    {
+      "id": "evidence",
+      "title": "A claim is not proof",
+      "task_id": "43238217-57f7-4471-ab91-e19c6783fcb4",
+      "outcome": {
+        "status": "review",
+        "retry_count": 0
+      },
+      "narrative": "The fixture engine claimed success without a file. The completion gate rejected done; the API retained the task for review.",
+      "steps": [
+        "pending",
+        "claimed",
+        "in_progress",
+        "done rejected",
+        "review"
+      ]
+    },
+    {
+      "id": "recovery",
+      "title": "Failure has a return path",
+      "task_id": "75f75703-be3b-4ccf-a296-1d6709fe8ed9",
+      "outcome": {
+        "status": "done",
+        "retry_count": 1
+      },
+      "narrative": "A simulated lost heartbeat abandoned the first run. The database requeued the task, and attempt two completed.",
+      "steps": [
+        "in_progress",
+        "heartbeat lost",
+        "abandoned",
+        "pending / retry 1",
+        "attempt 2 / done"
+      ]
+    },
+    {
+      "id": "budget",
+      "title": "Check the budget first",
+      "task_id": "6813ed4f-7b05-4dbf-b71a-a7321952ca9d",
+      "outcome": {
+        "status": "pending",
+        "retry_count": 1
+      },
+      "narrative": "A zero remaining task budget stopped execution before the model engine. This is a pre-call check, not a per-call spending cap.",
+      "steps": [
+        "pending",
+        "claimed",
+        "budget exhausted",
+        "engine calls: 0",
+        "pending / retry 1"
+      ]
+    },
+    {
+      "id": "pause",
+      "title": "The operator can stop intake",
+      "task_id": "765af467-5ffa-4238-a987-907a635c268c",
+      "outcome": {
+        "status": "pending",
+        "retry_count": 0
+      },
+      "narrative": "Global pause removed the task from claim eligibility. This check does not demonstrate interruption of an already-running provider call.",
+      "steps": [
+        "pending",
+        "global pause",
+        "claim rejected",
+        "pending"
+      ]
+    },
+    {
+      "id": "retries",
+      "title": "Retries share one result",
+      "outcome": {
+        "status": "verified"
+      },
+      "narrative": "Eight parallel HTTP requests used the same key and body. A transaction-scoped lock serialized them; one comment and one replay record were committed.",
+      "steps": [
+        "8 requests",
+        "key lock",
+        "1 mutation",
+        "1 response record",
+        "8 matching responses"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "event_type": "project.created",
+      "subject_type": "project",
+      "created_at": "2026-11-14 18:09:59.324657-06:00"
+    },
+    {
+      "seq": 2,
+      "event_type": "task.created",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:09:59.985986-06:00"
+    },
+    {
+      "seq": 3,
+      "event_type": "task.ready",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:09:59.985986-06:00"
+    },
+    {
+      "seq": 4,
+      "event_type": "task.claimed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:09:59.991528-06:00"
+    },
+    {
+      "seq": 5,
+      "event_type": "run.created",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:09:59.991528-06:00"
+    },
+    {
+      "seq": 6,
+      "event_type": "run.started",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:09:59.997316-06:00"
+    },
+    {
+      "seq": 7,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:09:59.997316-06:00"
+    },
+    {
+      "seq": 8,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:09:59.999307-06:00"
+    },
+    {
+      "seq": 9,
+      "event_type": "task.artifact_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.005533-06:00"
+    },
+    {
+      "seq": 10,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.008652-06:00"
+    },
+    {
+      "seq": 11,
+      "event_type": "run.succeeded",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.010363-06:00"
+    },
+    {
+      "seq": 12,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.010363-06:00"
+    },
+    {
+      "seq": 13,
+      "event_type": "task.created",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.016888-06:00"
+    },
+    {
+      "seq": 14,
+      "event_type": "task.ready",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.016888-06:00"
+    },
+    {
+      "seq": 15,
+      "event_type": "task.claimed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.018207-06:00"
+    },
+    {
+      "seq": 16,
+      "event_type": "run.created",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.018207-06:00"
+    },
+    {
+      "seq": 17,
+      "event_type": "run.started",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.019999-06:00"
+    },
+    {
+      "seq": 18,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.019999-06:00"
+    },
+    {
+      "seq": 19,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.021170-06:00"
+    },
+    {
+      "seq": 20,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.024193-06:00"
+    },
+    {
+      "seq": 21,
+      "event_type": "run.succeeded",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.026214-06:00"
+    },
+    {
+      "seq": 22,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.026214-06:00"
+    },
+    {
+      "seq": 23,
+      "event_type": "task.created",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.032649-06:00"
+    },
+    {
+      "seq": 24,
+      "event_type": "task.ready",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.032649-06:00"
+    },
+    {
+      "seq": 25,
+      "event_type": "task.claimed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.034124-06:00"
+    },
+    {
+      "seq": 26,
+      "event_type": "run.created",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.034124-06:00"
+    },
+    {
+      "seq": 27,
+      "event_type": "run.started",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.035502-06:00"
+    },
+    {
+      "seq": 28,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.035502-06:00"
+    },
+    {
+      "seq": 29,
+      "event_type": "agent.heartbeat_lost",
+      "subject_type": "agent",
+      "created_at": "2026-11-14 18:10:00.036449-06:00"
+    },
+    {
+      "seq": 30,
+      "event_type": "run.abandoned",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.036449-06:00"
+    },
+    {
+      "seq": 31,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.036449-06:00"
+    },
+    {
+      "seq": 32,
+      "event_type": "task.claimed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.038810-06:00"
+    },
+    {
+      "seq": 33,
+      "event_type": "run.created",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.038810-06:00"
+    },
+    {
+      "seq": 34,
+      "event_type": "run.started",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.040655-06:00"
+    },
+    {
+      "seq": 35,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.040655-06:00"
+    },
+    {
+      "seq": 36,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.041897-06:00"
+    },
+    {
+      "seq": 37,
+      "event_type": "task.artifact_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.044827-06:00"
+    },
+    {
+      "seq": 38,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.046931-06:00"
+    },
+    {
+      "seq": 39,
+      "event_type": "run.succeeded",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.048743-06:00"
+    },
+    {
+      "seq": 40,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.048743-06:00"
+    },
+    {
+      "seq": 41,
+      "event_type": "task.created",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.051760-06:00"
+    },
+    {
+      "seq": 42,
+      "event_type": "task.ready",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.051760-06:00"
+    },
+    {
+      "seq": 43,
+      "event_type": "task.claimed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.053430-06:00"
+    },
+    {
+      "seq": 44,
+      "event_type": "run.created",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.053430-06:00"
+    },
+    {
+      "seq": 45,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.056589-06:00"
+    },
+    {
+      "seq": 46,
+      "event_type": "run.failed",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.058350-06:00"
+    },
+    {
+      "seq": 47,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.058350-06:00"
+    },
+    {
+      "seq": 48,
+      "event_type": "task.created",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.061116-06:00"
+    },
+    {
+      "seq": 49,
+      "event_type": "task.ready",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.061116-06:00"
+    },
+    {
+      "seq": 50,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.070769-06:00"
+    },
+    {
+      "seq": 51,
+      "event_type": "task.artifact_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.089009-06:00"
+    },
+    {
+      "seq": 52,
+      "event_type": "task.created",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.093086-06:00"
+    },
+    {
+      "seq": 53,
+      "event_type": "task.ready",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.093086-06:00"
+    },
+    {
+      "seq": 54,
+      "event_type": "task.claimed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.099996-06:00"
+    },
+    {
+      "seq": 55,
+      "event_type": "run.created",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.099996-06:00"
+    },
+    {
+      "seq": 56,
+      "event_type": "run.started",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.105910-06:00"
+    },
+    {
+      "seq": 57,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.105910-06:00"
+    },
+    {
+      "seq": 58,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.107417-06:00"
+    },
+    {
+      "seq": 59,
+      "event_type": "task.artifact_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.112073-06:00"
+    },
+    {
+      "seq": 60,
+      "event_type": "task.comment_added",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.115806-06:00"
+    },
+    {
+      "seq": 61,
+      "event_type": "run.succeeded",
+      "subject_type": "run",
+      "created_at": "2026-11-14 18:10:00.118589-06:00"
+    },
+    {
+      "seq": 62,
+      "event_type": "task.status_changed",
+      "subject_type": "task",
+      "created_at": "2026-11-14 18:10:00.118589-06:00"
+    }
+  ]
+}
